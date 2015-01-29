@@ -1,0 +1,11 @@
+{
+	"name"        : "bellows/debug",
+	"description" : "A set of debugging tools",
+	"license"     : "MIT",
+	"require"     : {},
+	"autoload"    : {
+		"psr-4": {
+			"Debug\\": "src/"
+		}
+	}
+}
