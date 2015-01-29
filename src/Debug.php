@@ -14,16 +14,29 @@ abstract class Debug {
 		$locationString = self::getLocation(1 + self::$quitting);
 
 		echo "<pre>";
-		echo "<strong>$locationString</strong><br/>";
-		echo htmlentities(@var_export($args, true));
+		echo "<strong>$locationString</strong>\n";
+		foreach ($args as $arg) {
+			echo htmlentities(@var_export($arg, true))."\n";
+		}
+
 		echo "</pre><!--\n ---- ";
 		echo $locationString."\n\n\n\n";
-		@var_export($args);
+		foreach ($args as $arg) {
+			echo @var_export($arg)."\n";
+		}
 		echo "\n-->";
 
 	}
 
-	public function getLocation($stackLevel = 0) {
+	public static function quit() {
+
+		self::$quitting = 2;
+		call_user_func_array(['\\Debug\\Debug', 'show'], func_get_args());
+
+		exit;
+	}
+
+	public static function getLocation($stackLevel = 0) {
 		$backtrace = debug_backtrace();
 
 		if (! isset($backtrace[$stackLevel])) {
@@ -40,11 +53,4 @@ abstract class Debug {
 		return sprintf("%s:%s", $file, $stack['line']);
 
 	}
-
-	public static function quit($data/*, $data2, ...*/) {
-		self::$quitting = 2;
-		call_user_func_array([get_called_class(), 'show'], func_get_args());
-		exit;
-	}
-
 }
