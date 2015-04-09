@@ -6,12 +6,12 @@ abstract class Debug {
 
 	public static $projectRoot;
 
-	protected static $quitting = false;
+	protected static $callDepth = 1;
 
 	public static function show($data/*, $data2, ...*/) {
 		$args = func_get_args();
 
-		$locationString = self::getLocation(1 + self::$quitting);
+		$locationString = self::getLocation(self::$callDepth);
 
 		echo "<pre>";
 		echo "<strong>$locationString</strong>\n";
@@ -25,12 +25,15 @@ abstract class Debug {
 			echo @var_export($arg)."\n";
 		}
 		echo "\n-->";
+	}
 
+	public static function setCallDepth($callDepth) {
+		self::$callDepth = $callDepth;
 	}
 
 	public static function quit() {
 
-		self::$quitting = 2;
+		self::setCallDepth(3);
 		call_user_func_array(['\\Debug\\Debug', 'show'], func_get_args());
 
 		exit;
